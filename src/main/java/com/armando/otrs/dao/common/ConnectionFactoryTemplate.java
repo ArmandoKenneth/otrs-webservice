@@ -28,7 +28,7 @@ public class ConnectionFactoryTemplate {
 
 	private ComboPooledDataSource cpds;
 
-	private static ConnectionFactoryTemplate con = new ConnectionFactoryTemplate();
+	private static ConnectionFactory con = new ConnectionFactory();
 
 	/*
 	 * Some options to be used with C3P0 (pooling lib). Feel free to edit,
@@ -39,7 +39,7 @@ public class ConnectionFactoryTemplate {
 	private int acquireIncrement = 5;
 	private int maxPoolSize = 30;
 
-	public ConnectionFactoryTemplate() {
+	public ConnectionFactory() {
 		try {
 			startPooledDataSource();
 		} catch (Exception e) {
@@ -47,7 +47,7 @@ public class ConnectionFactoryTemplate {
 		}
 	}
 
-	public ConnectionFactoryTemplate(String driver, String url, String database, String user, String password) {
+	public ConnectionFactory(String driver, String url, String database, String user, String password) {
 		this.driver = driver;
 		this.url = url;
 		this.database = database;
@@ -60,9 +60,9 @@ public class ConnectionFactoryTemplate {
 		}
 	}
 
-	public static ConnectionFactoryTemplate getInstance() throws SQLException, Exception {
+	public static ConnectionFactory getInstance() throws SQLException, Exception {
 		if (con == null) {
-			con = new ConnectionFactoryTemplate();
+			con = new ConnectionFactory();
 		} 
 		return con;
 	}
