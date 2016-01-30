@@ -1,0 +1,4 @@
+*.classpath
+*.war
+target/
+.settings/
