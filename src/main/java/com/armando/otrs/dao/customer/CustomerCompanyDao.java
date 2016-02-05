@@ -8,6 +8,7 @@ import java.util.List;
 import com.armando.otrs.dao.common.BaseDao;
 import com.armando.otrs.exception.CustomerException;
 import com.armando.otrs.model.customer.CustomerCompany;
+import com.armando.otrs.util.ResponseCodes;
 import com.armando.otrs.util.ValidId;
 
 /**
@@ -76,11 +77,17 @@ public class CustomerCompanyDao extends BaseDao {
 			getStatement().setString(3, customerId);
 
 			if (getStatement().executeUpdate() < 1) {
-				throw new CustomerException("customer_company not found");
+				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND,"Customer company not found");
 			}
 		} catch (CustomerException c) {
 			throw c;
 		} catch (SQLException s) {
+			if (s.getMessage().contains("change_by")){
+				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"change_by\" is invalid");
+			}
+			if (s.getMessage().contains("valid_id")){
+				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"valid_id\" is invalid");
+			}
 			throw new Exception(s);
 		} catch (Exception e) {
 			throw e;
@@ -122,7 +129,7 @@ public class CustomerCompanyDao extends BaseDao {
 			getStatement().setInt(11, customer.getChangeBy());
 			int modifiedRows = getStatement().executeUpdate();
 			if (modifiedRows < 1) {
-				throw new CustomerException("Error inserting the customer_company");
+				throw new Exception("Error inserting the Customer Company");
 			}
 			setResultSet(getStatement().getGeneratedKeys());
 			if (getResultSet().next()) {
@@ -164,7 +171,11 @@ public class CustomerCompanyDao extends BaseDao {
 					+ "       comments=?, valid_id=?, change_time=now(), \n" + "       change_by=?\n"
 					+ " WHERE customer_id=?;";
 			setStatement(getConnection().prepareStatement(sql));
-			getStatement().setString(1, customer.getCustomerId());
+			if (customer.getCustomerId() == null || customer.getCustomerId().isEmpty()){
+				getStatement().setString(1, originalCustomerId);
+			}else{
+				getStatement().setString(1, customer.getCustomerId());
+			}
 			getStatement().setString(2, customer.getName());
 			getStatement().setString(3, customer.getStreet());
 			getStatement().setString(4, customer.getZip());
@@ -180,12 +191,20 @@ public class CustomerCompanyDao extends BaseDao {
 			getStatement().setString(11, originalCustomerId);
 			int modifiedRows = getStatement().executeUpdate();
 			if (modifiedRows < 1) {
-				throw new CustomerException("customer_company not found");
+				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Customer company not found");
 			}
-			customer.setCustomerId(originalCustomerId);
+			if (customer.getCustomerId() == null || customer.getCustomerId().isEmpty()){
+				customer.setCustomerId(originalCustomerId);
+			}
 		} catch (CustomerException c) {
 			throw c;
 		} catch (SQLException s) {
+			if (s.getMessage().contains("change_by")){
+				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"change_by\" is invalid");
+			}
+			if (s.getMessage().contains("valid_id")){
+				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"valid_id\" is invalid");
+			}
 			analiseSqlException(s);
 		} catch (Exception e) {
 			throw e;
@@ -208,10 +227,10 @@ public class CustomerCompanyDao extends BaseDao {
 	 */
 	private void analiseSqlException(SQLException s) throws CustomerException, Exception {
 		if (s.getMessage().contains("customer_company_name")) {
-			throw new CustomerException("The value in unique attribute \"name\" already exists");
+			throw new CustomerException(ResponseCodes.BAD_REQUEST,"The value in unique attribute \"name\" already exists");
 		}
 		if (s.getMessage().contains("customer_id")) {
-			throw new CustomerException("The value in unique attribute \"customer_id\" already exists");
+			throw new CustomerException(ResponseCodes.BAD_REQUEST,"The value in unique attribute \"customer_id\" already exists");
 		}
 		throw new Exception(s);
 	}
@@ -255,6 +274,9 @@ public class CustomerCompanyDao extends BaseDao {
 			getStatement().setString(1, customerId);
 			setResultSet(getStatement().executeQuery());
 			List<CustomerCompany> customerList = rsCustomerCompany();
+			if (customerList.isEmpty()){
+				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND, "Customer company not found"); 
+			}
 			return customerList.isEmpty() ? null : customerList.get(0);
 		} catch (SQLException s) {
 			throw new Exception(s);

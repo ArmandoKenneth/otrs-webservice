@@ -4,7 +4,11 @@ import javax.ws.rs.core.MediaType;
 
 import com.armando.otrs.util.JsonUtil;
 import com.armando.otrs.util.ResponseCodes;
-
+/**
+ * https://github.com/RestCheatSheet/api-cheat-sheet#api-design-cheat-sheet
+ * @author armando.rocha
+ *
+ */
 public class BaseREST {
 
 	protected JsonUtil json = new JsonUtil();

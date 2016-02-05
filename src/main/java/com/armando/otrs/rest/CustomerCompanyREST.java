@@ -14,7 +14,7 @@ import com.armando.otrs.util.ResponseCodes;
  * @author armando.rocha
  *
  */
-@Path("/customercompany")
+@Path("/customercompanies")
 public class CustomerCompanyREST extends BaseREST{
 	
 	private CustomerCompanyService ccService = new CustomerCompanyService();
