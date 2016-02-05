@@ -1,2 +1,5 @@
 *.classpath
+*.war
+target/
 .settings/
+src/main/java/com/armando/otrs/dao/common/ConnectionFactory.java
