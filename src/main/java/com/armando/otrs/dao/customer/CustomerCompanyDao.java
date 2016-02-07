@@ -274,9 +274,6 @@ public class CustomerCompanyDao extends BaseDao {
 			getStatement().setString(1, customerId);
 			setResultSet(getStatement().executeQuery());
 			List<CustomerCompany> customerList = rsCustomerCompany();
-			if (customerList.isEmpty()){
-				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND, "Customer company not found"); 
-			}
 			return customerList.isEmpty() ? null : customerList.get(0);
 		} catch (SQLException s) {
 			throw new Exception(s);
@@ -296,7 +293,7 @@ public class CustomerCompanyDao extends BaseDao {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public List<CustomerCompany> rsCustomerCompany() throws SQLException, Exception {
+	private List<CustomerCompany> rsCustomerCompany() throws SQLException, Exception {
 		List<CustomerCompany> list = new LinkedList<>();
 		while (getResultSet().next()) {
 			CustomerCompany customer = new CustomerCompany();

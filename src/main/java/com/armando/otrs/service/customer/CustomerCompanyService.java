@@ -41,7 +41,11 @@ public class CustomerCompanyService {
 			if (customerId == null || customerId.isEmpty()){
 				throw new CustomerException(ResponseCodes.BAD_REQUEST, "Field \"customer_id\" is required");
 			}
-			return ccDao.getCustomerCompany(customerId);
+			CustomerCompany customerCompany = ccDao.getCustomerCompany(customerId);
+			if (customerCompany == null){
+				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND, "Customer company not found"); 
+			}
+			return customerCompany;
 		} catch (CustomerException c) {	
 			throw c;
 		} catch (Exception e) {
