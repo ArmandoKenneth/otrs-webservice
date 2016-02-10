@@ -56,7 +56,11 @@ public class CustomerUserService {
 	
 	public CustomerUser getCustomerUser(int id) throws Exception {
 		try {
-			return cUserDao.getCustomerUser(id);
+			CustomerUser customerUser = cUserDao.getCustomerUser(id);
+			if (customerUser == null){
+				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND,"Customer user not found");
+			}
+			return customerUser;
 		} catch (CustomerException c) {	
 			throw c;
 		} catch (Exception e) {
