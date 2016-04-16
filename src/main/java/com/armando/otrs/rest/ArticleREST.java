@@ -1,7 +1,7 @@
 package com.armando.otrs.rest;
 
 
-import javax.websocket.server.PathParam;
+import javax.websocket.server.PathParam; 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.armando.otrs.exception.ArticleException;
-import com.armando.otrs.model.article.Article;
-import com.armando.otrs.service.article.ArticleService;
+import com.armando.otrs.model.Article;
+import com.armando.otrs.service.ArticleService;
 import com.armando.otrs.util.ResponseCodes;
 
 @Path("/articles")
@@ -35,7 +35,7 @@ public class ArticleREST extends BaseREST {
 			result = super.json.objectToJson(aService.getAllTicketArticles(ticketId));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error getting all the articles from the selected ticket");
@@ -52,7 +52,7 @@ public class ArticleREST extends BaseREST {
 			result = super.json.objectToJson(aService.getArticle(id));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error getting the article");
@@ -70,7 +70,7 @@ public class ArticleREST extends BaseREST {
 			result = super.json.objectToJson(aService.insertArticle(article));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error inserting the article");
@@ -88,7 +88,7 @@ public class ArticleREST extends BaseREST {
 			result = "Article deleted";
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error deleting the article");

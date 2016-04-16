@@ -1,13 +1,12 @@
-package com.armando.otrs.dao.customer;
+package com.armando.otrs.dao;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.armando.otrs.dao.common.BaseDao;
 import com.armando.otrs.exception.CustomerException;
-import com.armando.otrs.model.customer.CustomerCompany;
+import com.armando.otrs.model.CustomerCompany;
 import com.armando.otrs.util.ResponseCodes;
 import com.armando.otrs.util.ValidId;
 
@@ -20,6 +19,8 @@ import com.armando.otrs.util.ValidId;
  */
 
 public class CustomerCompanyDao extends BaseDao {
+	
+	
 	/**
 	 * Validates (set the valid_id attribute to VALID) a customer_company
 	 * 
@@ -71,24 +72,18 @@ public class CustomerCompanyDao extends BaseDao {
 		try {
 			getAvailabeConnection();
 			String sql = "UPDATE customer_company SET valid_id=?, change_time=now(), change_by=? WHERE customer_id=?";
-			setStatement(getConnection().prepareStatement(sql));
-			getStatement().setInt(1, validId);
-			getStatement().setInt(2, changeBy);
-			getStatement().setString(3, customerId);
+			setPs(getCon().prepareStatement(sql));
+			getPs().setInt(1, validId);
+			getPs().setInt(2, changeBy);
+			getPs().setString(3, customerId);
 
-			if (getStatement().executeUpdate() < 1) {
+			if (getPs().executeUpdate() < 1) {
 				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND,"Customer company not found");
 			}
 		} catch (CustomerException c) {
 			throw c;
 		} catch (SQLException s) {
-			if (s.getMessage().contains("change_by")){
-				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"change_by\" is invalid");
-			}
-			if (s.getMessage().contains("valid_id")){
-				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"valid_id\" is invalid");
-			}
-			throw new Exception(s);
+			throw new CustomerException(s);
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -115,30 +110,30 @@ public class CustomerCompanyDao extends BaseDao {
 			String sql = "INSERT INTO customer_company(customer_id, name, street, zip, city, country, url, comments, "
 					+ "valid_id, create_time, create_by, change_time, change_by) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?,now(),?, now(), ?);";
-			setStatement(getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS));
-			getStatement().setString(1, customer.getCustomerId());
-			getStatement().setString(2, customer.getName());
-			getStatement().setString(3, customer.getStreet());
-			getStatement().setString(4, customer.getZip());
-			getStatement().setString(5, customer.getCity());
-			getStatement().setString(6, customer.getCountry());
-			getStatement().setString(7, customer.getUrl());
-			getStatement().setString(8, customer.getComments());
-			getStatement().setShort(9, customer.getValidId());
-			getStatement().setInt(10, customer.getCreateBy());
-			getStatement().setInt(11, customer.getChangeBy());
-			int modifiedRows = getStatement().executeUpdate();
+			setPs(getCon().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS));
+			getPs().setString(1, customer.getCustomerId());
+			getPs().setString(2, customer.getName());
+			getPs().setString(3, customer.getStreet());
+			getPs().setString(4, customer.getZip());
+			getPs().setString(5, customer.getCity());
+			getPs().setString(6, customer.getCountry());
+			getPs().setString(7, customer.getUrl());
+			getPs().setString(8, customer.getComments());
+			getPs().setShort(9, customer.getValidId());
+			getPs().setInt(10, customer.getCreateBy());
+			getPs().setInt(11, customer.getChangeBy());
+			int modifiedRows = getPs().executeUpdate();
 			if (modifiedRows < 1) {
-				throw new Exception("Error inserting the Customer Company");
+				throw new CustomerException(ResponseCodes.INTERNAL_ERROR,"Error inserting the Customer Company");
 			}
-			setResultSet(getStatement().getGeneratedKeys());
-			if (getResultSet().next()) {
-				customer.setCustomerId(getResultSet().getString(1));
+			setRs(getPs().getGeneratedKeys());
+			if (getRs().next()) {
+				customer.setCustomerId(getRs().getString(1));
 			}
 		} catch (CustomerException c) {
 			throw c;
 		} catch (SQLException s) {
-			analiseSqlException(s);
+			throw new CustomerException(s);
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -170,28 +165,28 @@ public class CustomerCompanyDao extends BaseDao {
 					+ "   SET customer_id = ?, name=?, street=?, zip=?, city=?, country=?, url=?, \n"
 					+ "       comments=?, valid_id=?, change_time=now(), \n" + "       change_by=?\n"
 					+ " WHERE customer_id=?;";
-			setStatement(getConnection().prepareStatement(sql));
+			setPs(getCon().prepareStatement(sql));
 			if (customer.getCustomerId() == null || customer.getCustomerId().isEmpty()){
-				getStatement().setString(1, originalCustomerId);
+				getPs().setString(1, originalCustomerId);
 			}else{
-				getStatement().setString(1, customer.getCustomerId());
+				getPs().setString(1, customer.getCustomerId());
 			}
-			getStatement().setString(2, customer.getName());
-			getStatement().setString(3, customer.getStreet());
-			getStatement().setString(4, customer.getZip());
-			getStatement().setString(5, customer.getCity());
-			getStatement().setString(6, customer.getCountry());
-			getStatement().setString(7, customer.getUrl());
+			getPs().setString(2, customer.getName());
+			getPs().setString(3, customer.getStreet());
+			getPs().setString(4, customer.getZip());
+			getPs().setString(5, customer.getCity());
+			getPs().setString(6, customer.getCountry());
+			getPs().setString(7, customer.getUrl());
 
-			getStatement().setString(8, customer.getComments());
-			getStatement().setShort(9, customer.getValidId());
+			getPs().setString(8, customer.getComments());
+			getPs().setShort(9, customer.getValidId());
 
-			getStatement().setInt(10, customer.getChangeBy());
+			getPs().setInt(10, customer.getChangeBy());
 
-			getStatement().setString(11, originalCustomerId);
-			int modifiedRows = getStatement().executeUpdate();
+			getPs().setString(11, originalCustomerId);
+			int modifiedRows = getPs().executeUpdate();
 			if (modifiedRows < 1) {
-				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Customer company not found");
+				throw new CustomerException(ResponseCodes.RESOURCE_NOT_FOUND,"Customer company not found");
 			}
 			if (customer.getCustomerId() == null || customer.getCustomerId().isEmpty()){
 				customer.setCustomerId(originalCustomerId);
@@ -199,40 +194,13 @@ public class CustomerCompanyDao extends BaseDao {
 		} catch (CustomerException c) {
 			throw c;
 		} catch (SQLException s) {
-			if (s.getMessage().contains("change_by")){
-				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"change_by\" is invalid");
-			}
-			if (s.getMessage().contains("valid_id")){
-				throw new CustomerException(ResponseCodes.BAD_REQUEST,"Value of the field \"valid_id\" is invalid");
-			}
-			analiseSqlException(s);
+			throw new CustomerException(s);
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			closeConnection();
 		}
 		return customer;
-	}
-
-	/**
-	 * Analise the SQLException that was raised and returns the correct message
-	 * (if it was as known cause)
-	 * 
-	 * @param s
-	 *            SqlException raised
-	 * @throws CustomerException
-	 *             CustomerException with a modified, friendly message
-	 * @throws Exception
-	 *             If the SQLException was raised by a unknow cause
-	 */
-	private void analiseSqlException(SQLException s) throws CustomerException, Exception {
-		if (s.getMessage().contains("customer_company_name")) {
-			throw new CustomerException(ResponseCodes.BAD_REQUEST,"The value in unique attribute \"name\" already exists");
-		}
-		if (s.getMessage().contains("customer_id")) {
-			throw new CustomerException(ResponseCodes.BAD_REQUEST,"The value in unique attribute \"customer_id\" already exists");
-		}
-		throw new Exception(s);
 	}
 
 	/**
@@ -245,12 +213,12 @@ public class CustomerCompanyDao extends BaseDao {
 		try {
 			getAvailabeConnection();
 			String sql = "SELECT * FROM customer_company WHERE valid_id = ?";
-			setStatement(getConnection().prepareStatement(sql));
-			getStatement().setInt(1, ValidId.VALID.getId());
-			setResultSet(getStatement().executeQuery());
+			setPs(getCon().prepareStatement(sql));
+			getPs().setInt(1, ValidId.VALID.getId());
+			setRs(getPs().executeQuery());
 			return rsCustomerCompany();
 		} catch (SQLException s) {
-			throw new Exception(s);
+			throw new CustomerException(s);
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -270,9 +238,9 @@ public class CustomerCompanyDao extends BaseDao {
 		try {
 			getAvailabeConnection();
 			String sql = "SELECT * FROM customer_company WHERE customer_id = ?";
-			setStatement(getConnection().prepareStatement(sql));
-			getStatement().setString(1, customerId);
-			setResultSet(getStatement().executeQuery());
+			setPs(getCon().prepareStatement(sql));
+			getPs().setString(1, customerId);
+			setRs(getPs().executeQuery());
 			List<CustomerCompany> customerList = rsCustomerCompany();
 			return customerList.isEmpty() ? null : customerList.get(0);
 		} catch (SQLException s) {
@@ -295,21 +263,21 @@ public class CustomerCompanyDao extends BaseDao {
 	 */
 	private List<CustomerCompany> rsCustomerCompany() throws SQLException, Exception {
 		List<CustomerCompany> list = new LinkedList<>();
-		while (getResultSet().next()) {
+		while (getRs().next()) {
 			CustomerCompany customer = new CustomerCompany();
-			customer.setCustomerId(getResultSet().getString("customer_id"));
-			customer.setName(getResultSet().getString("name"));
-			customer.setStreet(getResultSet().getString("street"));
-			customer.setZip(getResultSet().getString("zip"));
-			customer.setCity(getResultSet().getString("city"));
-			customer.setCountry(getResultSet().getString("country"));
-			customer.setUrl(getResultSet().getString("url"));
-			customer.setComments(getResultSet().getString("comments"));
-			customer.setValidId(getResultSet().getShort("valid_id"));
-			customer.setCreateTime(getResultSet().getTimestamp("create_time"));
-			customer.setCreateBy(getResultSet().getShort("create_by"));
-			customer.setChangeTime(getResultSet().getTimestamp("change_time"));
-			customer.setChangeBy(getResultSet().getShort("change_by"));
+			customer.setCustomerId(getRs().getString("customer_id"));
+			customer.setName(getRs().getString("name"));
+			customer.setStreet(getRs().getString("street"));
+			customer.setZip(getRs().getString("zip"));
+			customer.setCity(getRs().getString("city"));
+			customer.setCountry(getRs().getString("country"));
+			customer.setUrl(getRs().getString("url"));
+			customer.setComments(getRs().getString("comments"));
+			customer.setValidId(getRs().getShort("valid_id"));
+			customer.setCreateTime(getRs().getTimestamp("create_time"));
+			customer.setCreateBy(getRs().getShort("create_by"));
+			customer.setChangeTime(getRs().getTimestamp("change_time"));
+			customer.setChangeBy(getRs().getShort("change_by"));
 
 			list.add(customer);
 		}

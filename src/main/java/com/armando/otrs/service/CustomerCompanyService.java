@@ -1,10 +1,10 @@
-package com.armando.otrs.service.customer;
+package com.armando.otrs.service;
 
 import java.util.List;
 
-import com.armando.otrs.dao.customer.CustomerCompanyDao;
+import com.armando.otrs.dao.CustomerCompanyDao;
 import com.armando.otrs.exception.CustomerException;
-import com.armando.otrs.model.customer.CustomerCompany;
+import com.armando.otrs.model.CustomerCompany;
 import com.armando.otrs.util.ResponseCodes;
 /**
  * Service that will take care of the data validation and business logic related to the CustomerCompany

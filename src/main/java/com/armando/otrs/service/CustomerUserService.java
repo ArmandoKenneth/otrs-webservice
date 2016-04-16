@@ -1,10 +1,10 @@
-package com.armando.otrs.service.customer;
+package com.armando.otrs.service;
 
 import java.util.List;
 
-import com.armando.otrs.dao.customer.CustomerUserDao;
+import com.armando.otrs.dao.CustomerUserDao;
 import com.armando.otrs.exception.CustomerException;
-import com.armando.otrs.model.customer.CustomerUser;
+import com.armando.otrs.model.CustomerUser;
 import com.armando.otrs.util.ResponseCodes;
 
 public class CustomerUserService {

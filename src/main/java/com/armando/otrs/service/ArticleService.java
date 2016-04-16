@@ -1,10 +1,10 @@
-package com.armando.otrs.service.article;
+package com.armando.otrs.service;
 
 import java.util.List;
 
-import com.armando.otrs.dao.article.ArticleDao;
+import com.armando.otrs.dao.ArticleDao;
 import com.armando.otrs.exception.ArticleException;
-import com.armando.otrs.model.article.Article;
+import com.armando.otrs.model.Article;
 import com.armando.otrs.util.ResponseCodes;
 
 public class ArticleService {

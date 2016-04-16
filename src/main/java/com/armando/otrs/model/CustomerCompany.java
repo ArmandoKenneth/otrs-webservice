@@ -1,4 +1,4 @@
-package com.armando.otrs.model.customer;
+package com.armando.otrs.model;
 
 import java.sql.Timestamp;
 

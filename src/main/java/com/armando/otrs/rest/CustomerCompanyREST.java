@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.armando.otrs.exception.CustomerException;
-import com.armando.otrs.model.customer.CustomerCompany;
-import com.armando.otrs.service.customer.CustomerCompanyService;
+import com.armando.otrs.model.CustomerCompany;
+import com.armando.otrs.service.CustomerCompanyService;
 import com.armando.otrs.util.ResponseCodes;
 
 /**
@@ -37,7 +37,7 @@ public class CustomerCompanyREST extends BaseREST{
 			result = super.json.objectToJson(ccService.listAllActiveCustomerCompany());
 			setCode(ResponseCodes.SUCCESS);
 		} catch (CustomerException c){
-			setCode(c.getResponse());
+			setCode(c.getResponseCode());
 			result = c.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error fetching all active CustomerCompany");
@@ -59,7 +59,7 @@ public class CustomerCompanyREST extends BaseREST{
 			result = super.json.objectToJson(ccService.getCustomerCompany(customerId));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (CustomerException c){
-			setCode(c.getResponse());
+			setCode(c.getResponseCode());
 			result = c.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error getting customer company");
@@ -82,7 +82,7 @@ public class CustomerCompanyREST extends BaseREST{
 			result = super.json.objectToJson(ccService.insertCustomerCompany(customerCompany));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (CustomerException c){
-			setCode(c.getResponse());
+			setCode(c.getResponseCode());
 			result = c.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error inserting the customer company");
@@ -106,7 +106,7 @@ public class CustomerCompanyREST extends BaseREST{
 			result = super.json.objectToJson(ccService.editCustomerCompany(originalCustomerId, customerCompany));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (CustomerException c){
-			setCode(c.getResponse());
+			setCode(c.getResponseCode());
 			result = c.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error inserting the customer company");

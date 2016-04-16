@@ -8,14 +8,16 @@ package com.armando.otrs.util;
  */
 public enum ValidId {
 
-	VALID(1),
-	INVALID(2),
-	INVALID_TEMPORARILY(3);
+	VALID(1, "Valid"),
+	INVALID(2, "Invalid"),
+	INVALID_TEMPORARILY(3, "Invalid temporarily");
 	
 	private int id;
+	private String name;
 
-	ValidId(int id){
+	ValidId(int id, String name){
 		this.id = id;
+		this.name = name;
 	}
 	
 	/**

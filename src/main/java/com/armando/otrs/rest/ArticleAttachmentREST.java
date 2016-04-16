@@ -11,10 +11,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.armando.otrs.exception.ArticleException;
-import com.armando.otrs.model.article.ArticleAttachment;
-import com.armando.otrs.service.article.ArticleAttachmentService;
+import com.armando.otrs.model.ArticleAttachment;
+import com.armando.otrs.service.ArticleAttachmentService;
 import com.armando.otrs.util.ResponseCodes;
-
+ 
 @Path("/attachments")
 public class ArticleAttachmentREST extends BaseREST {
 
@@ -33,7 +33,7 @@ public class ArticleAttachmentREST extends BaseREST {
 			result = super.json.objectToJson(attachmentService.getAttachment(id));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error getting the attachment");
@@ -50,7 +50,7 @@ public class ArticleAttachmentREST extends BaseREST {
 			result = super.json.objectToJson(attachmentService.getAttachmentsFromArticle(articleId));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error getting the attachments from the article "+articleId);
@@ -68,7 +68,7 @@ public class ArticleAttachmentREST extends BaseREST {
 			result = super.json.objectToJson(attachmentService.insertAttachment(attachment));
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error inserting the attachment");
@@ -86,7 +86,7 @@ public class ArticleAttachmentREST extends BaseREST {
 			result = "Attachmente deleted";
 			setCode(ResponseCodes.SUCCESS);
 		} catch (ArticleException a){
-			setCode(a.getResponse());
+			setCode(a.getResponseCode());
 			result = a.getMessage();
 		} catch (Exception e) {
 			result = super.buildInternalErrorMessage("Error deleting the attachment");

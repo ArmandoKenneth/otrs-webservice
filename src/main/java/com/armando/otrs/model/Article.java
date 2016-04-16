@@ -1,4 +1,4 @@
-package com.armando.otrs.model.article;
+package com.armando.otrs.model;
 
 import java.sql.Date;
 
